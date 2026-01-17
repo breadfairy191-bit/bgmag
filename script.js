@@ -330,6 +330,7 @@ class AudioEngine {
         this.chunks = [];
 
         this.melodyTrack = null;
+        this.harmonyTrack = null;
         this.bassTrack = null;
         this.drumTrack = null;
 
@@ -369,10 +370,12 @@ class AudioEngine {
         this.masterGain.connect(this.recDest);
 
         this.melodyTrack = new Track(this.ctx, this.masterGain, 0.6);
+        this.harmonyTrack = new Track(this.ctx, this.masterGain, 0.4);
         this.bassTrack = new Track(this.ctx, this.masterGain, 0.7);
         this.drumTrack = new Track(this.ctx, this.masterGain, 0.6);
 
         this.melodyTrack.setInstrument('sine');
+        this.harmonyTrack.setInstrument('sine');
         this.bassTrack.setInstrument('sine');
         this.drumTrack.setInstrument('std');
     }
@@ -425,14 +428,29 @@ class AudioEngine {
         }
 
         // -- Melody -- (Step 0 and 4)
+        // -- Melody & Harmony -- (Step 0 and 4)
         if (step === 0 || step === 4) {
-            const noteName = currentChord[Math.floor((beatIndex * 999.9) % currentChord.length)]; // Deterministic-ish random
+            const chordLen = currentChord.length;
+            const noteIndex = Math.floor((beatIndex * 999.9) % chordLen);
+            const noteName = currentChord[noteIndex];
             const freq = getNote(noteName) || 440;
             const beatDur = 60 / state.tempo;
             // Deterministic random
             const dur = ((beatIndex * 111.1) % 1) > 0.6 ? beatDur * 4 : beatDur * 2;
+
+            // Melody
             const synthFn = INSTRUMENTS.melody[tracks.melody.instrument] || INSTRUMENTS.melody.sine;
             synthFn(ctx, tracks.melody.gainNode, freq, time, dur);
+
+            // Harmony (Next note in chord = a 3rd above usually)
+            if (tracks.harmony) {
+                const harmIndex = (noteIndex + 1) % chordLen;
+                const harmNote = currentChord[harmIndex];
+                const harmFreq = getNote(harmNote) || 440;
+                // Harmony usually quieter and same duration
+                const harmSynthFn = INSTRUMENTS.melody[tracks.harmony.instrument] || INSTRUMENTS.melody.sine;
+                harmSynthFn(ctx, tracks.harmony.gainNode, harmFreq, time, dur);
+            }
         }
     }
 
@@ -490,6 +508,7 @@ class AudioEngine {
 
         const tracks = {
             melody: this.melodyTrack,
+            harmony: this.harmonyTrack,
             bass: this.bassTrack,
             drum: this.drumTrack
         };
@@ -538,13 +557,16 @@ class AudioEngine {
         const offMelody = new Track(offlineCtx, offMaster, this.melodyTrack.volume);
         offMelody.setInstrument(this.melodyTrack.instrument);
 
+        const offHarmony = new Track(offlineCtx, offMaster, this.harmonyTrack.volume);
+        offHarmony.setInstrument(this.harmonyTrack.instrument);
+
         const offBass = new Track(offlineCtx, offMaster, this.bassTrack.volume);
         offBass.setInstrument(this.bassTrack.instrument);
 
         const offDrum = new Track(offlineCtx, offMaster, this.drumTrack.volume);
         offDrum.setInstrument(this.drumTrack.instrument);
 
-        const tracks = { melody: offMelody, bass: offBass, drum: offDrum };
+        const tracks = { melody: offMelody, harmony: offHarmony, bass: offBass, drum: offDrum };
         const state = { genre: this.genre, tempo: this.tempo, chords: this.chords };
 
         // Schedule ALL beats synchronously
@@ -716,14 +738,14 @@ document.getElementById('tempo-up').addEventListener('click', () => { engine.set
 function updateTempoUI(val) { document.getElementById('tempo-number').value = val; document.getElementById('tempo-slider').value = val; }
 
 document.getElementById('inst-melody').addEventListener('change', (e) => { if (engine.melodyTrack) engine.melodyTrack.setInstrument(e.target.value); });
+document.getElementById('inst-harmony').addEventListener('change', (e) => { if (engine.harmonyTrack) engine.harmonyTrack.setInstrument(e.target.value); });
 document.getElementById('inst-bass').addEventListener('change', (e) => { if (engine.bassTrack) engine.bassTrack.setInstrument(e.target.value); });
 document.getElementById('inst-drums').addEventListener('change', (e) => { if (engine.drumTrack) engine.drumTrack.setInstrument(e.target.value); });
 
 document.getElementById('vol-master').addEventListener('input', (e) => { if (engine.masterGain) engine.masterGain.gain.exponentialRampToValueAtTime(parseFloat(e.target.value) || 0.001, engine.ctx.currentTime + 0.1); });
-['vol-melody', 'vol-bass', 'vol-drums'].forEach(id => {
+['vol-melody', 'vol-harmony', 'vol-bass', 'vol-drums'].forEach(id => {
     document.getElementById(id).addEventListener('input', (e) => {
         const track = engine[id.replace('vol-', '').replace('drums', 'drum') + 'Track'];
         if (track) track.setVolume(parseFloat(e.target.value));
     });
 });
-
