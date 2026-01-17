@@ -1,0 +1,111 @@
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        height: auto;
+        min-height: 100vh;
+        justify-content: flex-start;
+    }
+
+    header {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .main-controls {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.8rem;
+    }
+
+    .control-btn {
+        width: 100%;
+        justify-content: center;
+        padding: 0.8rem;
+    }
+
+    .export-options {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .export-select {
+        margin-left: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .top-controls {
+        flex-direction: column;
+        width: 100%;
+        gap: 1rem;
+        padding: 1rem;
+        align-items: stretch;
+    }
+
+    .control-group {
+        width: 100%;
+    }
+
+    .tempo-wrapper {
+        width: 100%;
+        align-items: stretch;
+    }
+
+    .tempo-row {
+        justify-content: center;
+        width: 100%;
+    }
+
+    .tempo-wrapper input[type="range"] {
+        width: 100%;
+    }
+
+    .mixer {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .fader-group {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+    }
+
+    .fader-container {
+        height: auto;
+        width: 50%;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Rotate faders back to horizontal for mobile stacking if preferred, 
+       OR keep them vertical but arrange groups side-by-side. 
+       Given "fader-group" flex-direction: row above, let's make faders horizontal.
+    */
+
+    input[type=range].fader {
+        transform: none;
+        width: 100%;
+        height: 6px;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .inst-select {
+        max-width: 100px;
+    }
+
+    .spacer-select {
+        display: none;
+    }
+}
