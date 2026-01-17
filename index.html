@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generative BGM V2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Ambient Flow</h1>
+
+            <div class="main-controls">
+                <button id="play-btn" class="control-btn play-btn" aria-label="Play">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
+                    </svg>
+                    <span>Start</span>
+                </button>
+                <button id="rec-play-btn" class="control-btn rec-play-btn" aria-label="Record and Play">
+                    <div class="record-dot"></div>
+                    <span>Rec & Start</span>
+                </button>
+                <button id="export-btn" class="control-btn export-btn" aria-label="Export Loop">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 16L7 11L8.4 9.55L11 12.15V4H13V12.15L15.6 9.55L17 11L12 16ZM6 20C5.45 20 4.97917 19.8042 4.5875 19.4125C4.19583 19.0208 4 18.55 4 18V15H6V18H18V15H20V18C20 18.55 19.8042 19.0208 19.4125 19.4125C19.0208 19.8042 18.55 20 18 20H6Z"
+                            fill="currentColor" />
+                    </svg>
+                    <span>Export</span>
+                </button>
+                <div class="export-options">
+                    <select id="export-bars" class="export-select">
+                        <option value="8">8 Bars</option>
+                        <option value="16">16 Bars</option>
+                        <option value="32">32 Bars</option>
+                        <option value="64">64 Bars</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="top-controls">
+                <div class="control-group">
+                    <label for="genre-select">Genre</label>
+                    <div class="select-wrapper">
+                        <select id="genre-select">
+                            <option value="chill">Chill</option>
+                            <option value="dark">Dark</option>
+                            <option value="hop">Hop</option>
+                            <option value="pop" selected>Pop</option>
+                            <option value="ambient">Ambient</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="tempo-input">Tempo</label>
+                    <div class="tempo-wrapper">
+                        <div class="tempo-row">
+                            <button id="tempo-down" class="tempo-adj-btn" aria-label="Decrease Tempo">-</button>
+                            <input type="number" id="tempo-number" value="120" min="40" max="200">
+                            <button id="tempo-up" class="tempo-adj-btn" aria-label="Increase Tempo">+</button>
+                        </div>
+                        <input type="range" id="tempo-slider" min="40" max="200" value="120">
+                    </div>
+                </div>
+
+                </button>
+            </div>
+
+            <div class="mixer">
+                <div class="fader-group">
+                    <label for="vol-master">Master</label>
+                    <div class="spacer-select"></div>
+                    <div class="fader-container">
+                        <input type="range" id="vol-master" class="fader" min="0" max="1" step="0.01" value="0.7">
+                    </div>
+                </div>
+                <div class="divider"></div>
+
+                <!-- Melody -->
+                <div class="fader-group">
+                    <label for="vol-melody">Melody</label>
+                    <select id="inst-melody" class="inst-select">
+                        <option value="sine">Pure</option>
+                        <option value="pulse">Pulse</option>
+                        <option value="bell">Soft Bell</option>
+                        <option value="retro">Retro</option>
+                    </select>
+                    <div class="fader-container">
+                        <input type="range" id="vol-melody" class="fader" min="0" max="1" step="0.01" value="0.6">
+                    </div>
+                </div>
+
+                <!-- Bass -->
+                <div class="fader-group">
+                    <label for="vol-bass">Bass</label>
+                    <select id="inst-bass" class="inst-select">
+                        <option value="sine">Sub</option>
+                        <option value="saw">Reso Saw</option>
+                        <option value="square">Deep Sq</option>
+                        <option value="fm">FM Bass</option>
+                    </select>
+                    <div class="fader-container">
+                        <input type="range" id="vol-bass" class="fader" min="0" max="1" step="0.01" value="0.7">
+                    </div>
+                </div>
+
+                <!-- Drums -->
+                <div class="fader-group">
+                    <label for="vol-drums">Drums</label>
+                    <select id="inst-drums" class="inst-select">
+                        <option value="std">Standard</option>
+                        <option value="elect">Electro</option>
+                        <option value="lofi">Lo-Fi</option>
+                    </select>
+                    <div class="fader-container">
+                        <input type="range" id="vol-drums" class="fader" min="0" max="1" step="0.01" value="0.6">
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main>
+
+
+
+
+            <div class="status">
+                <span id="status-text">Ready</span>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
