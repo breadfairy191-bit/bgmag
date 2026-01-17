@@ -86,7 +86,8 @@
 
     .fader-container {
         height: auto;
-        width: 50%;
+        flex: 1;
+        /* Use flex grow instead of fixed width */
         display: flex;
         align-items: center;
     }

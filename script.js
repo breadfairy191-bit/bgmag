@@ -351,7 +351,7 @@ class AudioEngine {
         this.beatCount = 0;
     }
 
-    async init() {
+    init() {
         if (this.ctx) return;
 
         const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -446,7 +446,16 @@ class AudioEngine {
             if (tracks.harmony) {
                 const harmIndex = (noteIndex + 1) % chordLen;
                 const harmNote = currentChord[harmIndex];
-                const harmFreq = getNote(harmNote) || 440;
+                let harmFreq = getNote(harmNote) || 440;
+
+                // Mobile Optimization: Shift harmony up an octave for visibility on small speakers
+                // and use a rich instrument if pure sine is selected to help it cut through
+                const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+
+                if (isMobile) {
+                    harmFreq *= 2;
+                }
+
                 // Harmony usually quieter and same duration
                 const harmSynthFn = INSTRUMENTS.melody[tracks.harmony.instrument] || INSTRUMENTS.melody.sine;
                 harmSynthFn(ctx, tracks.harmony.gainNode, harmFreq, time, dur);
@@ -596,7 +605,7 @@ class AudioEngine {
 
     async start() {
         if (this.isPlaying) return;
-        await this.init();
+        this.init();
         if (this.ctx.state === 'suspended') await this.ctx.resume();
 
         this.isPlaying = true;
@@ -720,7 +729,7 @@ recPlayBtn.addEventListener('click', async () => {
         recPlayBtn.classList.remove('active');
         statusText.textContent = "Paused";
     } else {
-        await engine.init();
+        engine.init();
         if (engine.ctx.state === 'suspended') await engine.ctx.resume();
         engine.startRecording();
         recPlayBtn.classList.add('active');
