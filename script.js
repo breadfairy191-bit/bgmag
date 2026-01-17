@@ -431,7 +431,7 @@ class AudioEngine {
         // -- Melody & Harmony -- (Step 0 and 4)
         if (step === 0 || step === 4) {
             const chordLen = currentChord.length;
-            const noteIndex = Math.floor((beatIndex * 999.9) % chordLen);
+            const noteIndex = Math.floor(Math.random() * chordLen);
             const noteName = currentChord[noteIndex];
             const freq = getNote(noteName) || 440;
             const beatDur = 60 / state.tempo;
